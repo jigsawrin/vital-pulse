@@ -836,6 +836,62 @@ class Game {
         }
 
 
+        // ─── 画面中央のレティクルHUD (高視認性) ─────────────────────────
+        const cmx = this.mouseX;
+        const cmy = this.mouseY;
+        
+        // 1. リロードリング (レティクル周囲)
+        if (pl.reloading) {
+            const prog = 1 - pl.reloadTimer / pl.reloadTime;
+            c.save();
+            c.beginPath();
+            c.lineWidth = 4;
+            c.strokeStyle = 'rgba(255, 150, 0, 0.2)';
+            c.arc(cmx, cmy, 28, 0, Math.PI * 2);
+            c.stroke();
+            
+            c.beginPath();
+            c.strokeStyle = '#ffaa00';
+            c.lineCap = 'round';
+            c.arc(cmx, cmy, 28, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * prog));
+            c.stroke();
+            
+            // "RELOADING" 中央テキスト
+            const blink = 0.5 + Math.sin(Date.now() * 0.015) * 0.5;
+            c.font = 'bold 16px monospace';
+            c.textAlign = 'center';
+            c.fillStyle = `rgba(255, 120, 0, ${blink})`;
+            c.fillText('RELOADING', cmx, cmy - 45);
+            c.restore();
+        }
+
+        // 2. 装弾数表示 (細長いバー 5つ)
+        const cPipW = 12, cPipH = 4, cPipGap = 4;
+        const cTotalW = (cPipW + cPipGap) * 5 - cPipGap;
+        const cStartX = cmx - cTotalW / 2;
+        const cStartY = cmy + 35;
+        
+        for (let i = 0; i < pl.maxAmmo; i++) {
+            const px = cStartX + i * (cPipW + cPipGap);
+            const py = cStartY;
+            const loaded = i < pl.ammo;
+            
+            c.save();
+            if (loaded) {
+                // 装填済み：明るいシアン
+                c.fillStyle = '#00ffff';
+                c.shadowColor = '#00ffff';
+                c.shadowBlur = 8;
+                c.fillRect(px, py, cPipW, cPipH);
+            } else {
+                // 空：暗い枠のみ
+                c.strokeStyle = 'rgba(0, 255, 255, 0.25)';
+                c.lineWidth = 1;
+                c.strokeRect(px, py, cPipW, cPipH);
+            }
+            c.restore();
+        }
+
         // ─── ウェーブ進行通知 ────────────────────────────────────────
         if (this.waveNotifyTimer > 0) {
             const alpha = Math.min(1, this.waveNotifyTimer);
