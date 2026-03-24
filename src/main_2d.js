@@ -198,10 +198,9 @@ class Game {
         const pl = this.player;
         if (pl.reloading || pl.ammo <= 0 || pl.shotCooldown > 0) return;
 
-        // すでに this.mouseX / mouseY に正規化された座標が入っているため、それを使用
-        // ZOOM補正を考慮したワールド座標へ変換
+        // ZOOM補正を考慮したワールド座標へ変換（camYオフセットも加算）
         const wx = (this.mouseX / ZOOM) + this.camX;
-        const wy = (this.mouseY / ZOOM);
+        const wy = (this.mouseY / ZOOM) + this.camY;
 
         // ── ヒットスキャン判定 ──
         let hitType = 'miss';
