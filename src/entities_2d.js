@@ -498,10 +498,13 @@ export class Ally {
                 const bulletDmg = ROLE_STATS.ATTACKER.dmg * 0.7; // 威力アップ (0.4 -> 0.7)
                 const bulletVx = (this.facingRight ? 1 : -1) * 1400; // 超高速弾丸
                 const bx = this.facingRight ? this.x + this.w : this.x - 30;
-                const by = this.y + 62 + (Math.random() * 10 - 5); // 弾道をさらに低く調整 (48 -> 62)
-                window.dispatchEvent(new CustomEvent('vp-bullet', {
-                    detail: { x: bx, y: by, vx: bulletVx, dmg: bulletDmg }
-                }));
+                // 3弾道の弾幕をディスパッチ (上段・中段・下段)
+                [18, 40, 62].forEach(yOffset => {
+                    const by = this.y + yOffset + (Math.random() * 8 - 4);
+                    window.dispatchEvent(new CustomEvent('vp-bullet', {
+                        detail: { x: bx, y: by, vx: bulletVx, dmg: bulletDmg }
+                    }));
+                });
                 window.dispatchEvent(new CustomEvent('attacker-ult-fire'));
                 this.ultShootTimer = 0.06; // 連射速度アップ (0.08 -> 0.06)
             }
