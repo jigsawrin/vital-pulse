@@ -686,6 +686,10 @@ class Game {
     }
 
     _drawHUD(c) {
+        const uiScale = IS_MOBILE ? 1.25 : 1.0;
+        const hudH = IS_MOBILE ? 100 : 80;
+        const hudTop = CH - hudH;
+
         // ─── 上部バー ─────────────────────────────────────────────
         c.fillStyle = 'rgba(0,0,0,0.55)';
         c.fillRect(0, 0, CW, 38);
@@ -727,11 +731,6 @@ class Game {
         }
 
         // ─── 画面下部：分隊ステータス ＆ プレイヤーHUD ──────────────────
-        const pl = this.player;
-        const hudH = IS_MOBILE ? 100 : 80;
-        const hudTop = CH - hudH;
-        const uiScale = IS_MOBILE ? 1.25 : 1.0;
-        
         // 背景バー
         c.fillStyle = 'rgba(0, 15, 25, 0.85)';
         c.fillRect(0, hudTop, CW, hudH);
