@@ -1448,8 +1448,12 @@ export class Boss {
         if (this.flashTimer > 0) this.flashTimer -= dt;
 
         // --- ダイナミック移動 AI (画面内を左右に動き回る) ---
-        const alliesX = allies.length > 0 ? allies.map(a => a.x + a.w/2) : [this.x - 500];
-        const avgAllyX = alliesX.reduce((s, x) => s + x, 0) / alliesX.length;
+        const alliesX = allies.length > 0 
+            ? allies.map(a => a.x + a.w/2).filter(x => !isNaN(x)) 
+            : [this.x - 500];
+        const avgAllyX = alliesX.length > 0 
+            ? alliesX.reduce((s, x) => s + x, 0) / alliesX.length 
+            : (window._game ? window._game.camX + 200 : this.x - 500);
         
         const camX = window._game ? window._game.camX : (this.camX || 0);
         const screenW = window._game ? window._game.VW : (window.innerWidth / (window.devicePixelRatio || 1));

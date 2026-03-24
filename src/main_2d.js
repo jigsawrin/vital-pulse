@@ -389,10 +389,12 @@ class Game {
 
         // カメラ：味方NPCの重心を追従 (ボス戦中は固定)
         if (this.allies.length > 0 && this.bosses.length === 0) {
-            const avgX = this.allies.reduce((s, a) => s + a.x + a.w / 2, 0) / this.allies.length;
+            let avgX = this.allies.reduce((s, a) => s + a.x + a.w / 2, 0) / this.allies.length;
+            if (isNaN(avgX)) avgX = this.camX + VW * 0.42; // ガード
             const targetCamX = avgX - VW * 0.42;
             this.camX += (targetCamX - this.camX) * Math.min(dt * 4, 1);
-            this.camX  = Math.max(0, this.camX);
+            if (isNaN(this.camX)) this.camX = 0; // ガード
+            this.camX = Math.max(0, this.camX);
         }
 
         // チャンク自動生成
@@ -407,9 +409,10 @@ class Game {
         this.platforms = this.platforms.filter(p => p.x + p.w > this.camX - 200);
 
         // 味方
-        const centerX = this.allies.length > 0
-            ? this.allies.reduce((s, a) => s + a.x, 0) / this.allies.length
-            : 200;
+        let centerX = this.allies.length > 0
+            ? this.allies.reduce((s, a) => s + (isNaN(a.x) ? this.camX : a.x), 0) / this.allies.length
+            : this.camX + 200;
+        if (isNaN(centerX)) centerX = this.camX + 200;
         this.allies.forEach(a => {
             a.update(dt, this.enemies, this.bosses, this.platforms, centerX);
             if (a.x < this.camX + 10) a.x = this.camX + 10;
@@ -578,9 +581,11 @@ class Game {
 
         // TANK ULT 前衛シールド
         const tank = this.allies.find(a => a.role === 'TANK' && a.isUlting);
-        if (tank) {
-            const frontX = Math.max(...this.allies.map(a => a.x + a.w));
+        if (tank && this.allies.length > 0) {
+            const allyPos = this.allies.map(a => a.x + a.w).filter(x => !isNaN(x));
+            const frontX = allyPos.length > 0 ? Math.max(...allyPos) : tank.x + tank.w;
             const sx = frontX + 30 - this.camX;
+            if (isNaN(sx)) return; // 描画スキップ
             const time = performance.now() / 1000;
             const shMaxH = 280;
             const shW = 40;
