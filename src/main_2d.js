@@ -1,4 +1,4 @@
-import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave } from './entities_2d.js?v=b6';
+import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave } from './entities_2d.js?v=b7';
 import { SoundManager } from './audio_2d.js?v=b3';
 
 const CW = 1280;
@@ -892,16 +892,12 @@ class Game {
 
     // ─── LOOP ────────────────────────────────
     _animate() {
-        try {
-            const now = performance.now();
-            const dt  = Math.min((now - this.lastTime) / 1000, 0.05);
-            this.lastTime = now;
-            this._update(dt);
-            this._draw();
-            requestAnimationFrame(() => this._animate());
-        } catch (e) {
-            // Silently catch in production
-        }
+        const now = performance.now();
+        const dt  = Math.min((now - this.lastTime) / 1000, 0.05);
+        this.lastTime = now;
+        this._update(dt);
+        this._draw();
+        requestAnimationFrame(() => this._animate());
     }
 
     _playWaveStartSound() {
@@ -932,7 +928,8 @@ class Game {
         
         this._updateHighScore();
 
-        const el = document.getElementById('game-over');
+        const el = document.createElement('div');
+        el.id = 'game-over';
         el.style.position = 'fixed';
         el.style.top = '0'; el.style.left = '0';
         el.style.width = '100%'; el.style.height = '100%';

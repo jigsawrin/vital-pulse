@@ -1451,10 +1451,10 @@ export class Boss {
         const alliesX = allies.length > 0 ? allies.map(a => a.x + a.w/2) : [this.x - 500];
         const avgAllyX = alliesX.reduce((s, x) => s + x, 0) / alliesX.length;
         
-        const camX = window._game ? window._game.camX : 0;
-        const screenW = 1024;
-        const leftLimit = camX + 100;
-        const rightLimit = camX + screenW - this.w - 100;
+        const camX = window._game ? window._game.camX : (this.camX || 0);
+        const screenW = window._game ? window._game.VW : (window.innerWidth / (window.devicePixelRatio || 1));
+        const leftLimit = camX + 50;
+        const rightLimit = camX + screenW - this.w - 50;
 
         // 目標: 画面内のランダムな位置 or 味方の対角線上に動く意識
         if (this.bossTargetX === undefined || Math.abs(this.x - this.bossTargetX) < 20) {
