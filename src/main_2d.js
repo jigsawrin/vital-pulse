@@ -56,6 +56,8 @@ class Game {
         this.canvas.width  = CW;
         this.canvas.height = CH;
         this.isMobile = IS_MOBILE;
+        this.VW = VW; // 論理ワールド幅を保持
+        this.VH = VH; // 論理ワールド高を保持
         if (IS_MOBILE) document.body.classList.add('is-mobile');
         this._resize();
 

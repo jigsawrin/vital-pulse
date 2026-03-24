@@ -547,9 +547,9 @@ export class Ally {
                     // 敵がいない場合は斜め上空へ飛び回る
                     this.ultDashTimer = 0.25;
                     this.facingRight = Math.random() > 0.5;
-                    const dashDist = 400;
+                    const dashDist = 300; // 400 -> 300 に縮小
                     const dx = (this.facingRight ? 1 : -1) * dashDist;
-                    const dy = -dashDist * (0.3 + Math.random() * 0.7); // 斜め上
+                    const dy = -dashDist * (0.1 + Math.random() * 0.4); // 上昇を抑える
                     this.vx = dx / 0.15;
                     this.vy = dy / 0.15;
 
@@ -562,12 +562,21 @@ export class Ally {
             // 自前で座標更新（物理無視のため）
             this.x += this.vx * dt;
             this.y += this.vy * dt;
+
+            // 画面外への飛び出し防止 (ULT中)
+            if (window._game) {
+                const vw = window._game.VW;
+                const camX = window._game.camX;
+                if (this.x < camX + 10) this.x = camX + 10;
+                if (this.x + this.w > camX + vw - 10) this.x = camX + vw - 10 - this.w;
+            }
+
             if (this.y + this.h > GROUND_Y) {
                 this.y = GROUND_Y - this.h;
                 this.vy = 0;
                 this.vx *= 0.9;
             }
-            if (this.y < 0) { this.y = 0; this.vy = 0; }
+            if (this.y < 40) { this.y = 40; this.vy = 0; } // 上端も制限
             return;
         }
 
