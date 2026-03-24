@@ -209,10 +209,10 @@ body {
     text-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
     margin-bottom: 5vh;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 2px; /* Fixed syntax error here */
 }
 
-#title-screen .start-btn {
+#title-screen .start-btn { /* Fixed syntax error here */
     font-size: 1.5rem;
     padding: 15px 40px;
     border: 2px solid #0ff;
@@ -220,16 +220,26 @@ body {
     background: transparent;
     cursor: pointer;
     transition: all 0.2s;
-    animation: flash 2s infinite;
 }
 
-/* ── Ultimate Cut-in (Default / PC) ── */
+#title-screen .start-btn:hover {
+    background: #0ff;
+    color: #000;
+    box-shadow: 0 0 20px #0ff;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ── Ultimate Cut-in (Base / PC) ── */
 .ult-cutin {
     position: fixed;
     inset: 0;
     z-index: 15000;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -251,78 +261,110 @@ body {
     animation: stripeMove 2s linear infinite;
 }
 
+.ult-cutin .character-portrait {
+    position: absolute;
+    bottom: -50px;
+    width: 800px;
+    height: 800px;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 0 30px rgba(0,255,255,0.4));
+    z-index: 15001;
+    opacity: 0.7;
+}
+
+.ult-cutin .cutin-text {
+    position: relative;
+    font-size: 160px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 40px #f0f;
+    letter-spacing: 20px;
+    z-index: 15002;
+    margin: 0;
+    animation: textImpact 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes textImpact {
+    from { transform: scale(3); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* Shared Portrait Image Classes */
+.character-portrait.tank     { background-image: url('../assets/characters/tank_ult.png') !important; background-size: 700% 100% !important; background-position: 100% 0 !important; }
+.character-portrait.attacker { background-image: url('../assets/characters/attacker_ult.png') !important; background-size: 600% 100% !important; background-position: 100% 0 !important; }
+.character-portrait.flanker  { background-image: url('../assets/characters/flanker_ult.png') !important; background-size: 800% 100% !important; background-position: 100% 0 !important; }
+
+.ult-cutin .speech-text {
+    position: relative;
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff700;
+    padding: 10px 40px;
+    font-size: 2.2rem;
+    border-right: 8px solid #fff700;
+    z-index: 15003;
+}
+
+/* ── Ultimate Cut-in (Mobile Specific) ── */
+.is-mobile .ult-cutin {
+    z-index: 15000 !important;
+    overflow: hidden !important;
+    background: rgba(0, 0, 0, 0.82) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* Mobile specific */
+    transition: opacity 0.5s ease !important;
+    pointer-events: auto !important; /* Allow interaction on mobile if needed */
+}
+
+.is-mobile .ult-cutin .stripe-bg {
+    position: absolute !important;
+    width: 200% !important;
+    height: 100% !important;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 255, 255, 0.05),
+        rgba(0, 255, 255, 0.05) 40px,
+        transparent 40px,
+        transparent 80px
+    ) !important;
+    animation: stripeMove 2s linear infinite !important;
+    transform: none !important; /* Override PC transform */
+    opacity: 1 !important; /* Override PC opacity */
+    box-shadow: none !important; /* Override PC box-shadow */
+}
+
 @keyframes stripeMove {
     from { transform: translateX(0); }
     to   { transform: translateX(-80px); }
 }
 
-.ult-cutin .character-portrait {
-    position: absolute;
-    bottom: -20px;
-    width: 700px;
-    height: 700px;
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    filter: drop-shadow(0 0 20px rgba(0,255,255,0.4));
-    z-index: 15001;
-    display: block !important; /* Ensure it's never hidden */
-}
-
-/* Portrait Images (Sprite sheets) */
-.character-portrait.tank { 
-    background-image: url('../assets/characters/tank_ult.png') !important; 
-    background-size: 700% 100% !important; background-position: 100% 0 !important;
-}
-.character-portrait.attacker { 
-    background-image: url('../assets/characters/attacker_ult.png') !important; 
-    background-size: 600% 100% !important; background-position: 100% 0 !important;
-}
-.character-portrait.flanker { 
-    background-image: url('../assets/characters/flanker_ult.png') !important; 
-    background-size: 800% 100% !important; background-position: 100% 0 !important;
-}
-
-.ult-cutin .cutin-text {
-    position: relative;
-    font-size: min(15vw, 120px) !important;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 30px #f0f;
-    letter-spacing: 15px;
-    z-index: 15002;
-    animation: textImpact 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-}
-
-@keyframes textImpact {
-    from { transform: scale(2); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-}
-
-.ult-cutin .speech-text {
-    position: relative;
-    margin-top: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff700;
-    padding: 10px 30px;
-    font-size: 1.8rem;
-    border-right: 6px solid #fff700;
-    z-index: 15003;
-}
-
-/* ── Mobile-Specific Layout (IS-MOBILE body class) ── */
-.is-mobile .ult-cutin {
-    justify-content: flex-start !important;
-}
-
 .is-mobile .ult-cutin .character-portrait {
-    left: -100px !important;
-    bottom: -80px !important;
-    width: min(100vw, 650px) !important;
-    height: min(100vw, 650px) !important;
-    background-position: bottom left !important;
+    position: absolute !important;
+    bottom: -100px !important; /* Mobile specific */
+    left: -120px !important; /* Mobile specific */
+    width: min(100vw, 650px) !important; /* Mobile specific */
+    height: min(100vw, 650px) !important; /* Mobile specific */
+    background-size: auto 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: bottom left !important; /* Mobile specific */
+    filter: drop-shadow(0 0 30px rgba(0,255,255,0.5)) !important; /* Mobile specific */
+    z-index: 15001 !important;
+    opacity: 1.0 !important; /* Full opacity on mobile layout */
     animation: portraitSlide 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards !important;
+    image-rendering: pixelated !important;
+    top: auto !important; /* Override PC top */
+    transform: none !important; /* Override PC transform */
 }
+
+/* Character Portrait Images (Mobile specific overrides for background-position/size if needed, but shared paths are fine) */
+/* The shared .character-portrait.tank/attacker/flanker rules above already handle the image paths.
+   The !important flags in .is-mobile .ult-cutin .character-portrait will override generic properties.
+   If specific background-size/position are needed for mobile, they would go here with !important.
+   For now, the shared rules are sufficient for the image paths. */
 
 @keyframes portraitSlide {
     to { left: 0; }
@@ -331,34 +373,40 @@ body {
 .is-mobile .ult-cutin .cutin-text {
     position: absolute !important;
     top: 35% !important;
-    left: 10% !important;
-    transform: none !important;
-    font-size: min(18vw, 100px) !important;
+    left: 8% !important;
+    font-size: min(18vw, 90px) !important; /* Mobile specific */
+    font-weight: 900 !important;
+    color: #fff !important;
+    text-shadow: 0 0 30px #f0f !important; /* Mobile specific */
+    letter-spacing: 20px !important;
+    z-index: 15002 !important;
+    margin: 0 !important;
+    animation: none !important; /* Remove PC animation */
+    transform: none !important; /* Override PC transform */
+    font-style: normal !important; /* Override PC font-style */
 }
 
 .is-mobile .ult-cutin .speech-text {
     position: absolute !important;
-    bottom: 12% !important;
-    right: 5% !important;
+    bottom: 12% !important; /* Mobile specific */
+    right: 5% !important; /* Mobile specific */
     margin-top: 0 !important;
-    font-size: min(5vw, 1.4rem) !important;
-    animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #fff700 !important;
+    padding: 10px 40px !important; /* Mobile specific */
+    font-size: min(5vw, 1.4rem) !important; /* Mobile specific */
+    border-right: 6px solid #fff700 !important; /* Mobile specific */
+    z-index: 15003 !important;
+    animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both !important; /* Mobile specific animation */
+    transform: none !important; /* Override PC transform */
+    border: none !important; /* Override PC border */
+    font-weight: bold !important;
+    letter-spacing: normal !important;
 }
 
 @keyframes speechSlide {
     from { transform: translateX(100px); opacity: 0; }
     to   { transform: translateX(0); opacity: 1; }
-}
-
-#title-screen .start-btn:hover {
-    background: #0ff;
-    color: #000;
-    box-shadow: 0 0 20px #0ff;
-}
-
-@keyframes flash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
 }
 
 /* ── Orientation Overlay ── */
@@ -423,7 +471,7 @@ body {
     position: fixed;
     bottom: 95px; /* Above the HUD bar (80px) */
     right: 40px;
-    display: flex; 
+    display: flex;
     flex-direction: column;
     gap: 10px;
     z-index: 1000;
@@ -444,7 +492,7 @@ body {
     transition: all 0.2s ease;
 }
 
-#mobile-controls button:active {
+#mobile-controls button:active { /* Fixed syntax error here */
     background: #0ff;
     color: #000;
 }

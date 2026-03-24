@@ -4,7 +4,7 @@ import { SoundManager } from './audio_2d.js?v=b3';
 const CW = 1280;
 const CH = 720;
 const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-const ZOOM = IS_MOBILE ? 1.7 : 1.25;      // カメラズーム倍率をモバイルで拡大
+const ZOOM = IS_MOBILE ? 1.75 : 1.25;      // カメラズーム倍率をモバイルで拡大
 const VW   = Math.round(CW / ZOOM); // ワールド可視幅
 const VH   = Math.round(CH / ZOOM); // ワールド可視高
 
@@ -550,8 +550,9 @@ class Game {
         // ── ズームスケール適用（ゲームワールド描画） ──────────────────
         c.save();
         
-        // モバイル等の高ズーム時に地面が見切れないようY軸を調整
-        this.camY = IS_MOBILE ? Math.max(0, (GROUND_Y + 40) - VH) : 0;
+        // モバイル等の高ズーム時にHUDで地面が隠れないよう、地上付近を垂直カメラの中央へ
+        // 地面(520)を画面の下から150px(ワールド単位)くらいの位置へ
+        this.camY = IS_MOBILE ? (GROUND_Y - (VH - 150)) : 0;
         
         c.scale(ZOOM, ZOOM);
         c.translate(0, -this.camY);
