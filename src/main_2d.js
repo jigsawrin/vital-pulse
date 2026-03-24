@@ -1,4 +1,4 @@
-import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave } from './entities_2d.js?v=b5';
+import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave } from './entities_2d.js?v=b6';
 import { SoundManager } from './audio_2d.js?v=b3';
 
 const CW = 1280;

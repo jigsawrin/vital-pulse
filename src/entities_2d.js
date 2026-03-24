@@ -1420,7 +1420,9 @@ export class Boss {
         
         this.attackTimer = 0;
         this.slamTimer = 8.0; // 強力な衝撃波
-        this.shootTimer = 3.0; // 弾丸発発射
+        this.shootTimer = 3.0; // 次のバーストまでの待機
+        this.burstCount = 0;   // バースト内の残り弾数
+        this.burstTimer = 0;   // 弾丸間の間隔
     }
 
     applyDamage(amount) {
@@ -1469,24 +1471,31 @@ export class Boss {
         if (this.x > rightLimit && this.vx > 0) this.vx = 0;
 
         this.x += this.vx * dt;
+        // 異常値 (NaN) ガード
         if (isNaN(this.x)) {
-            this.x = groupCenterX + 500; 
+            this.x = avgAllyX + 400; 
         }
         this.facingRight = (avgAllyX > this.x);
 
         // --- 行動パターン ---
-        this.shootTimer -= dt;
-        if (this.shootTimer <= 0) {
-            this.shootTimer = 3.0;
-            const bulletVx = this.facingRight ? 450 : -450;
-            const startX = this.facingRight ? this.x + this.w : this.x;
-            
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    if (this.alive) {
-                        bossBullets.push(new BossBullet(startX, this.y + 60 + i*40, bulletVx, 0));
-                    }
-                }, i * 180);
+        
+        // 1. 弾丸バースト射撃 (setTimeoutの代わりにフレームベースで実装)
+        if (this.burstCount > 0) {
+            this.burstTimer -= dt;
+            if (this.burstTimer <= 0) {
+                const bulletVx = this.facingRight ? 450 : -450;
+                const startX = this.facingRight ? this.x + this.w : this.x;
+                bossBullets.push(new BossBullet(startX, this.y + 60 + (3 - this.burstCount) * 40, bulletVx, 0));
+                
+                this.burstCount--;
+                this.burstTimer = 0.18; // 次の弾までの間隔
+            }
+        } else {
+            this.shootTimer -= dt;
+            if (this.shootTimer <= 0) {
+                this.shootTimer = 3.0; // バースト間隔
+                this.burstCount = 3;   // 3連射
+                this.burstTimer = 0;   // 即座に1発目
             }
         }
 
