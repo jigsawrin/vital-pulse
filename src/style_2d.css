@@ -198,9 +198,18 @@ body {
 #title-screen .subtitle {
     font-size: 2rem;
     color: #00ffcc;
-    letter-spacing: 12px;
-    margin-bottom: 80px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
     text-shadow: 0 0 10px rgba(0,255,204,0.5);
+}
+
+#title-screen #high-score-box {
+    font-size: 1.4rem;
+    color: #fff700;
+    text-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
+    margin-bottom: 30px;
+    font-weight: bold;
+    letter-spacing: 2px;
 }
 
 #title-screen .start-btn {

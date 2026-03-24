@@ -155,6 +155,10 @@ class Game {
         this.gameOver = false;
         this.victory  = false;
 
+        // ハイスコア
+        this.highScore = parseInt(localStorage.getItem('vp-high-score')) || 0;
+        this._updateTitleHighScore();
+
         // イベントリスナー
         this._initEvents();
 
@@ -266,6 +270,7 @@ class Game {
                 titleScreen.classList.add('hidden');
                 if (this.soundManager) this.soundManager.playMainTheme();
                 this.lastTime = performance.now(); // リセットしてdtの跳ねを防止
+                this._updateTitleHighScore();
             });
         }
 
@@ -430,6 +435,7 @@ class Game {
                  // WAVE 25クリア判定
                  if (this.wave === 25 && !this.victory) {
                      this.victory = true;
+                     this._updateHighScore();
                      this._showVictory();
                  }
                  return false;
@@ -904,10 +910,13 @@ class Game {
 
     _showGameOver() {
         if (this.soundManager) {
-            this.soundManager.stopMainTheme();
+            this.soundManager.stopAllBGM();
             this.soundManager.playGameOverBGM();
         }
-        const el = document.createElement('div');
+        
+        this._updateHighScore();
+
+        const el = document.getElementById('game-over');
         el.style.position = 'fixed';
         el.style.top = '0'; el.style.left = '0';
         el.style.width = '100%'; el.style.height = '100%';
@@ -970,6 +979,19 @@ class Game {
         
         el.onclick = () => location.reload();
         document.body.appendChild(el);
+    }
+
+    _updateHighScore() {
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.setItem('vp-high-score', this.highScore);
+            this._updateTitleHighScore();
+        }
+    }
+
+    _updateTitleHighScore() {
+        const valEl = document.getElementById('high-score-val');
+        if (valEl) valEl.textContent = this.highScore;
     }
 }
 
