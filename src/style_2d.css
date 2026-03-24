@@ -233,78 +233,98 @@ body {
     50% { opacity: 0.3; }
 }
 
-/* ── Ultimate Cut-in (Base / PC) ── */
+/* ── Ultimate Cut-in (Base / PC - EXACT ORIGINAL) ── */
 .ult-cutin {
     position: fixed;
     inset: 0;
-    z-index: 15000;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.5s ease;
+    z-index: 15000;
+    color: white;
+    background: rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    transition: opacity 0.5s;
+    pointer-events: none;
 }
 
 .ult-cutin .stripe-bg {
     position: absolute;
     width: 200%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(0, 255, 255, 0.05),
-        rgba(0, 255, 255, 0.05) 40px,
-        transparent 40px,
-        transparent 80px
-    );
-    animation: stripeMove 2s linear infinite;
+    height: 110px;
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+    transform: rotate(-5deg);
+    opacity: 0.85;
+    box-shadow: 0 0 60px #fff;
+}
+
+.ult-cutin .cutin-text {
+    position: absolute;
+    left: 8%;
+    font-size: 5.5rem;
+    font-weight: 900;
+    font-style: italic;
+    text-shadow: 4px 4px 0 #000, -2px -2px 0 #0ff;
+    animation: slideInLeft 0.3s ease-out forwards;
+    letter-spacing: 4px;
+}
+
+.ult-cutin .speech-text {
+    position: absolute;
+    right: 10%;
+    font-size: 2.6rem;
+    font-weight: bold;
+    background: #000;
+    padding: 8px 36px;
+    transform: skewX(-15deg);
+    border: 3px solid #fff;
+    animation: slideInRight 0.4s ease-out forwards;
+    letter-spacing: 2px;
 }
 
 .ult-cutin .character-portrait {
     position: absolute;
-    bottom: -50px;
-    width: 800px;
-    height: 800px;
-    background-size: auto 100%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
     background-repeat: no-repeat;
-    background-position: center;
-    filter: drop-shadow(0 0 30px rgba(0,255,255,0.4));
-    z-index: 15001;
-    opacity: 0.7;
+    background-position: left top;
+    opacity: 0;
+    animation: portraitZoomInCenter 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    z-index: 5;
+    image-rendering: pixelated; 
 }
 
-.ult-cutin .cutin-text {
-    position: relative;
-    font-size: 160px;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 40px #f0f;
-    letter-spacing: 20px;
-    z-index: 15002;
-    margin: 0;
-    animation: textImpact 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+/* Character Portrait Images */
+.character-portrait.tank {
+    background-image: url('../assets/characters/tank_ult.png');
+    background-size: 700% 100%;
+    filter: drop-shadow(4px 4px 0 #4444ff) drop-shadow(-4px -4px 0 #00ffff);
+}
+.character-portrait.attacker {
+    background-image: url('../assets/characters/attacker_ult.png');
+    background-size: 600% 100%;
+    filter: drop-shadow(4px 4px 0 #ffaa00) drop-shadow(-4px -4px 0 #ffff00);
+}
+.character-portrait.flanker {
+    background-image: url('../assets/characters/flanker_ult.png');
+    background-size: 800% 100%;
+    filter: drop-shadow(4px 4px 0 #00ffaa) drop-shadow(-4px -4px 0 #00ff00);
 }
 
-@keyframes textImpact {
-    from { transform: scale(3); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
+@keyframes slideInLeft {
+    from { transform: translateX(-200%) skewX(-20deg); opacity: 0; }
+    to   { transform: translateX(0)     skewX(-20deg); opacity: 1; }
 }
-
-/* Shared Portrait Image Classes */
-.character-portrait.tank     { background-image: url('../assets/characters/tank_ult.png') !important; background-size: 700% 100% !important; background-position: 100% 0 !important; }
-.character-portrait.attacker { background-image: url('../assets/characters/attacker_ult.png') !important; background-size: 600% 100% !important; background-position: 100% 0 !important; }
-.character-portrait.flanker  { background-image: url('../assets/characters/flanker_ult.png') !important; background-size: 800% 100% !important; background-position: 100% 0 !important; }
-
-.ult-cutin .speech-text {
-    position: relative;
-    margin-top: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff700;
-    padding: 10px 40px;
-    font-size: 2.2rem;
-    border-right: 8px solid #fff700;
-    z-index: 15003;
+@keyframes slideInRight {
+    from { transform: translateX(200%) skewX(-15deg); opacity: 0; }
+    to   { transform: translateX(0)    skewX(-15deg); opacity: 1; }
+}
+@keyframes portraitZoomInCenter {
+    from { transform: translate(-50%, -40%) scale(0.85); opacity: 0; }
+    to   { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
 }
 
 /* ── Ultimate Cut-in (Mobile Specific) ── */
@@ -344,10 +364,10 @@ body {
 
 .is-mobile .ult-cutin .character-portrait {
     position: absolute !important;
-    bottom: -100px !important; /* Mobile specific */
-    left: -120px !important; /* Mobile specific */
-    width: min(100vw, 650px) !important; /* Mobile specific */
-    height: min(100vw, 650px) !important; /* Mobile specific */
+    bottom: -30px !important; /* Much higher so it doesn't get cut off */
+    left: -40px !important; 
+    width: min(70vw, 400px) !important; /* Considerably smaller portrait */
+    height: min(70vw, 400px) !important;
     background-size: auto 100% !important;
     background-repeat: no-repeat !important;
     background-position: bottom left !important; /* Mobile specific */
@@ -374,11 +394,11 @@ body {
     position: absolute !important;
     top: 35% !important;
     left: 8% !important;
-    font-size: min(18vw, 90px) !important; /* Mobile specific */
+    font-size: min(15vw, 70px) !important; /* Smaller text */
     font-weight: 900 !important;
     color: #fff !important;
     text-shadow: 0 0 30px #f0f !important; /* Mobile specific */
-    letter-spacing: 20px !important;
+    letter-spacing: 15px !important;
     z-index: 15002 !important;
     margin: 0 !important;
     animation: none !important; /* Remove PC animation */
@@ -388,18 +408,18 @@ body {
 
 .is-mobile .ult-cutin .speech-text {
     position: absolute !important;
-    bottom: 12% !important; /* Mobile specific */
+    bottom: 15% !important; /* Mobile specific */
     right: 5% !important; /* Mobile specific */
     margin-top: 0 !important;
     background: rgba(0, 0, 0, 0.8) !important;
     color: #fff700 !important;
-    padding: 10px 40px !important; /* Mobile specific */
-    font-size: min(5vw, 1.4rem) !important; /* Mobile specific */
+    padding: 10px 30px !important; /* Mobile specific */
+    font-size: min(4vw, 1.2rem) !important; /* Smaller text */
     border-right: 6px solid #fff700 !important; /* Mobile specific */
+    border: none !important; /* Override PC border */
     z-index: 15003 !important;
     animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both !important; /* Mobile specific animation */
     transform: none !important; /* Override PC transform */
-    border: none !important; /* Override PC border */
     font-weight: bold !important;
     letter-spacing: normal !important;
 }
