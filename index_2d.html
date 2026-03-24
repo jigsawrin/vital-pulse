@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITAL PULSE 2D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style_2d.css?v=6">
+</head>
+<body>
+    <div id="init-screen">
+        <div class="blink-text">CLICK HERE</div>
+    </div>
+    <div id="title-screen">
+        <h1 class="glitch">VITAL PULSE</h1>
+        <p class="subtitle">TACTICAL HEALER</p>
+        <button class="start-btn">START MISSION</button>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div id="mobile-controls">
+        <button id="btn-reload">RELOAD</button>
+        <button id="btn-ult">ULTIMATE</button>
+    </div>
+
+    <!-- Orientation Overlay for Mobile -->
+    <div id="rotate-overlay">
+        <div class="rotate-icon"></div>
+        <p>PLEASE ROTATE YOUR DEVICE</p>
+    </div>
+
+    <script type="module" src="src/main_2d.js"></script>
+</body>
+</html>

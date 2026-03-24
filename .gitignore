@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+/tmp/
+*.log
+
+# Project specific
+/brain/
+.agents/
+.agent/
+_agents/
+_agent/
+node_modules/
+dist/
+build/
