@@ -223,7 +223,7 @@ body {
     animation: flash 2s infinite;
 }
 
-/* ── Ultimate Cut-in ── */
+/* ── Ultimate Cut-in (Default / PC) ── */
 .ult-cutin {
     position: fixed;
     inset: 0;
@@ -258,37 +258,38 @@ body {
 
 .ult-cutin .character-portrait {
     position: absolute;
-    bottom: 0;
-    width: 600px;
-    height: 600px;
+    bottom: -20px;
+    width: 700px;
+    height: 700px;
     background-size: auto 100%;
     background-repeat: no-repeat;
     background-position: center;
     filter: drop-shadow(0 0 20px rgba(0,255,255,0.4));
     z-index: 15001;
+    display: block !important; /* Ensure it's never hidden */
 }
 
-/* Portrait Images (Last frame of sprite sheets) */
+/* Portrait Images (Sprite sheets) */
 .character-portrait.tank { 
-    background-image: url('../assets/characters/tank_ult.png'); 
-    background-size: 700% 100%; background-position: 100% 0;
+    background-image: url('../assets/characters/tank_ult.png') !important; 
+    background-size: 700% 100% !important; background-position: 100% 0 !important;
 }
 .character-portrait.attacker { 
-    background-image: url('../assets/characters/attacker_ult.png'); 
-    background-size: 600% 100%; background-position: 100% 0;
+    background-image: url('../assets/characters/attacker_ult.png') !important; 
+    background-size: 600% 100% !important; background-position: 100% 0 !important;
 }
 .character-portrait.flanker { 
-    background-image: url('../assets/characters/flanker_ult.png'); 
-    background-size: 800% 100%; background-position: 100% 0;
+    background-image: url('../assets/characters/flanker_ult.png') !important; 
+    background-size: 800% 100% !important; background-position: 100% 0 !important;
 }
 
 .ult-cutin .cutin-text {
     position: relative;
-    font-size: 120px;
+    font-size: min(15vw, 120px) !important;
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 30px #f0f;
-    letter-spacing: 20px;
+    letter-spacing: 15px;
     z-index: 15002;
     animation: textImpact 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
 }
@@ -301,7 +302,7 @@ body {
 .ult-cutin .speech-text {
     position: relative;
     margin-top: 20px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     color: #fff700;
     padding: 10px 30px;
     font-size: 1.8rem;
@@ -309,18 +310,18 @@ body {
     z-index: 15003;
 }
 
-/* ── Mobile-Specific ULT Layout ── */
+/* ── Mobile-Specific Layout (IS-MOBILE body class) ── */
 .is-mobile .ult-cutin {
-    justify-content: flex-start;
+    justify-content: flex-start !important;
 }
 
 .is-mobile .ult-cutin .character-portrait {
-    left: -100px;
-    bottom: -50px;
-    width: min(80vw, 600px);
-    height: min(80vw, 600px);
-    background-position: bottom left;
-    animation: portraitSlide 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    left: -100px !important;
+    bottom: -80px !important;
+    width: min(100vw, 650px) !important;
+    height: min(100vw, 650px) !important;
+    background-position: bottom left !important;
+    animation: portraitSlide 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards !important;
 }
 
 @keyframes portraitSlide {
@@ -328,19 +329,20 @@ body {
 }
 
 .is-mobile .ult-cutin .cutin-text {
-    position: absolute;
-    top: 40%;
-    left: 10%;
-    transform: none;
-    font-size: min(15vw, 100px);
+    position: absolute !important;
+    top: 35% !important;
+    left: 10% !important;
+    transform: none !important;
+    font-size: min(18vw, 100px) !important;
 }
 
 .is-mobile .ult-cutin .speech-text {
-    position: absolute;
-    bottom: 12%;
-    right: 5%;
-    font-size: min(4.5vw, 1.5rem);
-    animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+    position: absolute !important;
+    bottom: 12% !important;
+    right: 5% !important;
+    margin-top: 0 !important;
+    font-size: min(5vw, 1.4rem) !important;
+    animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both !important;
 }
 
 @keyframes speechSlide {

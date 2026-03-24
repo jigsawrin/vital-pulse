@@ -155,6 +155,7 @@ class Game {
         this.spawnInterval = 0.6;
         this.waveNotifyTimer = 4.0; // 初回WAVE表示用
         
+        this.camY = 0; // 垂直カメラオフセット
         this.gameOver = false;
         this.victory  = false;
 
@@ -548,7 +549,12 @@ class Game {
 
         // ── ズームスケール適用（ゲームワールド描画） ──────────────────
         c.save();
+        
+        // モバイル等の高ズーム時に地面が見切れないようY軸を調整
+        this.camY = IS_MOBILE ? Math.max(0, (GROUND_Y + 40) - VH) : 0;
+        
         c.scale(ZOOM, ZOOM);
+        c.translate(0, -this.camY);
 
         this._drawBg(c);
         this._drawGround(c);
