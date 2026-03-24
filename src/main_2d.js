@@ -281,20 +281,6 @@ class Game {
                 }
             });
         }
-        if (btnUlt) {
-            btnUlt.addEventListener('pointerdown', (e) => {
-                e.stopPropagation();
-                // 溜まっている味方のULTを即座に発動させる
-                let triggered = false;
-                this.allies.forEach(a => {
-                    if (a.ultCharge >= 100 && !a.isUlting) {
-                        a.triggerUlt();
-                        triggered = true;
-                    }
-                });
-                // 誰も溜まっていない場合は、溜まっているアピール（視覚的フィードバック）などは今回は省略
-            });
-        }
 
         window.addEventListener('ultimate-start', e => {
             this._showCutIn(e.detail.role, e.detail.speech);
@@ -817,7 +803,7 @@ class Game {
         } else {
             c.font = '10px monospace';
             c.fillStyle = 'rgba(0, 255, 255, 0.45)';
-            c.fillText(`H:+${pl.healHead} B:+${pl.healBody} [CLICK] HEAL [R] RELOAD [U] ULT`, pBaseX, pHudY + 54);
+            c.fillText(`H:+${pl.healHead} B:+${pl.healBody} [CLICK] HEAL [R] RELOAD`, pBaseX, pHudY + 54);
         }
 
 

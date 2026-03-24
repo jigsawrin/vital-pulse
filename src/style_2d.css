@@ -285,45 +285,30 @@ body {
 /* ── Mobile Controls ── */
 #mobile-controls {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    display: none; /* Only show in landscape on mobile */
+    bottom: 95px; /* Above the HUD bar (80px) */
+    right: 40px;
+    display: flex; 
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     z-index: 1000;
 }
 
-@media (orientation: landscape) and (max-width: 1024px) {
-    #mobile-controls {
-        display: flex;
-    }
-}
-
 #mobile-controls button {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.4);
     color: #0ff;
-    border: 2px solid #0ff;
-    padding: 15px 25px;
-    font-size: 1.2rem;
+    border: 1.5px solid rgba(0, 255, 255, 0.5);
+    padding: 8px 15px; /* Smaller */
+    font-size: 0.9rem; /* Smaller */
     font-family: inherit;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
     touch-action: manipulation;
+    transition: all 0.2s ease;
 }
 
 #mobile-controls button:active {
     background: #0ff;
     color: #000;
-}
-
-#btn-ult {
-    border-color: #f0f !important;
-    color: #f0f !important;
-}
-
-#btn-ult:active {
-    background: #f0f !important;
-    color: #000 !important;
 }
