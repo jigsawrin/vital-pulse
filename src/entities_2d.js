@@ -1175,8 +1175,9 @@ export class FloatingText {
 
     draw(ctx, camX) {
         if (this.life <= 0) return;
+        const isMobile = window._game && window._game.isMobile;
         const alpha = Math.min(1, this.life / this.maxLife * 2);
-        const size  = this.isCrit ? 26 : 18;
+        const size  = (this.isCrit ? 26 : 18) * (isMobile ? 1.5 : 1.0);
         ctx.save();
         ctx.globalAlpha = alpha;
         ctx.font = `bold ${size}px monospace`;

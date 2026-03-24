@@ -3,9 +3,10 @@ import { SoundManager } from './audio_2d.js?v=b3';
 
 const CW = 1280;
 const CH = 720;
-const ZOOM = 1.25;           // カメラズーム倍率
-const VW   = Math.round(CW / ZOOM); // ワールド可視幅 ≈ 1024
-const VH   = Math.round(CH / ZOOM); // ワールド可視高 ≈ 576
+const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const ZOOM = IS_MOBILE ? 1.7 : 1.25;      // カメラズーム倍率をモバイルで拡大
+const VW   = Math.round(CW / ZOOM); // ワールド可視幅
+const VH   = Math.round(CH / ZOOM); // ワールド可視高
 
 // ────────────────────────────────────────────
 // ────────────────────────────────────────────
@@ -54,6 +55,7 @@ class Game {
         this.ctx    = this.canvas.getContext('2d');
         this.canvas.width  = CW;
         this.canvas.height = CH;
+        this.isMobile = IS_MOBILE;
         this._resize();
 
         // 入力
@@ -703,7 +705,7 @@ class Game {
             c.strokeStyle = '#ff0000';
             c.lineWidth = 2;
             c.strokeRect(bx, by, bw, bh);
-            c.font = 'bold 16px monospace';
+            c.font = `bold ${16 * uiScale}px monospace`;
             c.textAlign = 'center';
             c.fillStyle = '#fff';
             c.shadowColor = '#f00'; c.shadowBlur = 10;
@@ -713,11 +715,12 @@ class Game {
 
         // ─── 画面下部：分隊ステータス ＆ プレイヤーHUD ──────────────────
         const pl = this.player;
-        const hudH = 80;
+        const hudH = IS_MOBILE ? 100 : 80;
         const hudTop = CH - hudH;
+        const uiScale = IS_MOBILE ? 1.25 : 1.0;
         
         // 背景バー
-        c.fillStyle = 'rgba(0, 15, 25, 0.75)';
+        c.fillStyle = 'rgba(0, 15, 25, 0.85)';
         c.fillRect(0, hudTop, CW, hudH);
         c.strokeStyle = 'rgba(0, 255, 255, 0.3)';
         c.lineWidth = 2;
@@ -725,10 +728,10 @@ class Game {
 
         // -- 味方分隊ステータス (左〜中央) --
         const allyBaseX = 30;
-        const allySpacing = 210;
+        const allySpacing = 210 * uiScale;
         this.allies.forEach((a, i) => {
             const bx = allyBaseX + i * allySpacing;
-            const by = hudTop + 15;
+            const by = hudTop + (IS_MOBILE ? 25 : 15);
             
             // ロール名
             c.font = 'bold 14px monospace';
@@ -738,7 +741,7 @@ class Game {
             c.fillText(a.role, bx, by + 12);
             
             // HPバー
-            const bW = 160, bH = 12;
+            const bW = 160 * uiScale, bH = 12 * uiScale;
             const hpPct = Math.max(0, a.hp / a.maxHp);
             c.fillStyle = '#1a1a1a';
             c.fillRect(bx, by + 18, bW, bH);
@@ -763,18 +766,18 @@ class Game {
             }
             
             // HP数値
-            c.font = '10px monospace';
+            c.font = `${10 * uiScale}px monospace`;
             c.fillStyle = '#ffffff';
             c.textAlign = 'right';
-            c.fillText(`${Math.ceil(a.hp)} / ${a.maxHp}`, bx + bW, by + 12);
+            c.fillText(`${Math.ceil(a.hp)} / ${a.maxHp}`, bx + bW, by + (IS_MOBILE ? 10 : 12));
         });
 
         // プレイヤー情報 (右側)
-        const pBaseX = CW - 320;
-        const pHudY = hudTop + 15;
+        const pBaseX = CW - (320 * uiScale);
+        const pHudY = hudTop + (IS_MOBILE ? 25 : 15);
         
         // （レベル表記は削除）
-        c.font = 'bold 18px monospace';
+        c.font = `bold ${18 * uiScale}px monospace`;
         c.textAlign = 'left';
         c.fillStyle = '#00ffff';
         c.fillText(`HEALER SYSTEM`, pBaseX, pHudY + 14);
@@ -801,15 +804,15 @@ class Game {
         if (pl.reloading) {
             const prog = 1 - pl.reloadTimer / pl.reloadTime;
             const blink = 0.6 + Math.sin(Date.now() * 0.01) * 0.4;
-            c.font = 'bold 12px monospace';
+            c.font = `bold ${12 * uiScale}px monospace`;
             c.fillStyle = `rgba(255,140,0,${blink})`;
-            c.fillText('RELOADING...', pBaseX + 80, pHudY + 54);
-            c.fillStyle = '#333'; c.fillRect(pBaseX + 170, pHudY + 45, 90, 8);
-            c.fillStyle = '#ff8800'; c.fillRect(pBaseX + 170, pHudY + 45, 90 * prog, 8);
+            c.fillText('RELOADING...', pBaseX + (80 * uiScale), pHudY + (54 * uiScale));
+            c.fillStyle = '#333'; c.fillRect(pBaseX + (170 * uiScale), pHudY + (45 * uiScale), 90 * uiScale, 8 * uiScale);
+            c.fillStyle = '#ff8800'; c.fillRect(pBaseX + (170 * uiScale), pHudY + (45 * uiScale), 90 * uiScale * prog, 8 * uiScale);
         } else {
-            c.font = '10px monospace';
+            c.font = `${10 * uiScale}px monospace`;
             c.fillStyle = 'rgba(0, 255, 255, 0.45)';
-            c.fillText(`H:+${pl.healHead} B:+${pl.healBody} [CLICK] HEAL [R] RELOAD`, pBaseX, pHudY + 54);
+            c.fillText(`H:+${pl.healHead} B:+${pl.healBody} [CLICK] HEAL [R] RELOAD`, pBaseX, pHudY + (54 * uiScale));
         }
 
 

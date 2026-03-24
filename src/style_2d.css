@@ -151,7 +151,7 @@ body {
     background: #000;
     color: #fff;
     cursor: pointer;
-    font-size: 2.5rem;
+    font-size: min(8vw, 6vh);
     font-weight: bold;
     letter-spacing: 6px;
     transition: opacity 0.4s ease;
@@ -186,28 +186,28 @@ body {
 }
 
 #title-screen .glitch {
-    font-size: 8rem;
+    font-size: min(15vw, 12vh); /* Responsive font size */
     font-weight: 900;
     font-style: italic;
     color: #fff;
     text-shadow: 4px 4px 0 #ff00ff, -4px -4px 0 #00ffff;
     letter-spacing: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 2vh;
 }
 
 #title-screen .subtitle {
-    font-size: 2rem;
+    font-size: min(4vw, 3vh);
     color: #00ffcc;
     letter-spacing: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 4vh;
     text-shadow: 0 0 10px rgba(0,255,204,0.5);
 }
 
 #title-screen #high-score-box {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: #fff700;
     text-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
-    margin-bottom: 30px;
+    margin-bottom: 5vh;
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -221,6 +221,92 @@ body {
     cursor: pointer;
     transition: all 0.2s;
     animation: flash 2s infinite;
+}
+
+/* ── Ultimate Cut-in ── */
+.ult-cutin {
+    position: fixed;
+    inset: 0;
+    z-index: 15000;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.ult-cutin .stripe-bg {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 255, 255, 0.1),
+        rgba(0, 255, 255, 0.1) 40px,
+        transparent 40px,
+        transparent 80px
+    );
+    animation: stripeMove 2s linear infinite;
+}
+
+@keyframes stripeMove {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-80px); }
+}
+
+.ult-cutin .character-portrait {
+    position: absolute;
+    left: -100px;
+    bottom: -50px;
+    width: min(80vw, 600px);
+    height: min(80vw, 600px);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    filter: drop-shadow(0 0 30px #0ff);
+    z-index: 15001;
+    animation: portraitSlide 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes portraitSlide {
+    to { left: 0; }
+}
+
+.ult-cutin .cutin-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: min(20vw, 180px);
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 40px #f0f;
+    letter-spacing: 20px;
+    z-index: 15002;
+    animation: textImpact 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes textImpact {
+    from { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+    to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.ult-cutin .speech-text {
+    position: absolute;
+    bottom: 10%;
+    right: 5%;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff700;
+    padding: 15px 40px;
+    font-size: min(4vw, 2rem);
+    border-right: 8px solid #fff700;
+    z-index: 15003;
+    animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+}
+
+@keyframes speechSlide {
+    from { transform: translateX(100px); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
 }
 
 #title-screen .start-btn:hover {
