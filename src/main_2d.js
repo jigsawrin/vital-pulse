@@ -56,6 +56,7 @@ class Game {
         this.canvas.width  = CW;
         this.canvas.height = CH;
         this.isMobile = IS_MOBILE;
+        if (IS_MOBILE) document.body.classList.add('is-mobile');
         this._resize();
 
         // 入力

@@ -229,9 +229,11 @@ body {
     inset: 0;
     z-index: 15000;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     transition: opacity 0.5s ease;
 }
 
@@ -241,8 +243,8 @@ body {
     height: 100%;
     background: repeating-linear-gradient(
         45deg,
-        rgba(0, 255, 255, 0.1),
-        rgba(0, 255, 255, 0.1) 40px,
+        rgba(0, 255, 255, 0.05),
+        rgba(0, 255, 255, 0.05) 40px,
         transparent 40px,
         transparent 80px
     );
@@ -256,15 +258,68 @@ body {
 
 .ult-cutin .character-portrait {
     position: absolute;
+    bottom: 0;
+    width: 600px;
+    height: 600px;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 0 20px rgba(0,255,255,0.4));
+    z-index: 15001;
+}
+
+/* Portrait Images (Last frame of sprite sheets) */
+.character-portrait.tank { 
+    background-image: url('../assets/characters/tank_ult.png'); 
+    background-size: 700% 100%; background-position: 100% 0;
+}
+.character-portrait.attacker { 
+    background-image: url('../assets/characters/attacker_ult.png'); 
+    background-size: 600% 100%; background-position: 100% 0;
+}
+.character-portrait.flanker { 
+    background-image: url('../assets/characters/flanker_ult.png'); 
+    background-size: 800% 100%; background-position: 100% 0;
+}
+
+.ult-cutin .cutin-text {
+    position: relative;
+    font-size: 120px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 30px #f0f;
+    letter-spacing: 20px;
+    z-index: 15002;
+    animation: textImpact 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes textImpact {
+    from { transform: scale(2); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.ult-cutin .speech-text {
+    position: relative;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff700;
+    padding: 10px 30px;
+    font-size: 1.8rem;
+    border-right: 6px solid #fff700;
+    z-index: 15003;
+}
+
+/* ── Mobile-Specific ULT Layout ── */
+.is-mobile .ult-cutin {
+    justify-content: flex-start;
+}
+
+.is-mobile .ult-cutin .character-portrait {
     left: -100px;
     bottom: -50px;
     width: min(80vw, 600px);
     height: min(80vw, 600px);
-    background-size: contain;
-    background-repeat: no-repeat;
     background-position: bottom left;
-    filter: drop-shadow(0 0 30px #0ff);
-    z-index: 15001;
     animation: portraitSlide 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
 }
 
@@ -272,35 +327,19 @@ body {
     to { left: 0; }
 }
 
-.ult-cutin .cutin-text {
+.is-mobile .ult-cutin .cutin-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: min(20vw, 180px);
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 40px #f0f;
-    letter-spacing: 20px;
-    z-index: 15002;
-    animation: textImpact 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    top: 40%;
+    left: 10%;
+    transform: none;
+    font-size: min(15vw, 100px);
 }
 
-@keyframes textImpact {
-    from { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-    to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-.ult-cutin .speech-text {
+.is-mobile .ult-cutin .speech-text {
     position: absolute;
-    bottom: 10%;
+    bottom: 12%;
     right: 5%;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff700;
-    padding: 15px 40px;
-    font-size: min(4vw, 2rem);
-    border-right: 8px solid #fff700;
-    z-index: 15003;
+    font-size: min(4.5vw, 1.5rem);
     animation: speechSlide 0.6s 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
 }
 
