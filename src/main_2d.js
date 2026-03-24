@@ -203,14 +203,20 @@ class Game {
         const wy = (this.mouseY / ZOOM) + this.camY;
 
         // ── ヒットスキャン判定 ──
+        // モバイルはZOOM=1.75でキャラが大きく見えるが当たり判定のワールド座標サイズは同じなので
+        // モバイル時はヒットボックスを拡大して見た目に合わせる
+        const hitScale = IS_MOBILE ? 1.8 : 1.0;
         let hitType = 'miss';
         for (const a of this.allies) {
             const hCX = a.x + a.w / 2;
             const hCY = a.y + a.h * 0.15;
-            const hR  = a.w * 0.28;
+            const hR  = a.w * 0.28 * hitScale;
             const dH  = Math.sqrt((wx - hCX) ** 2 + (wy - hCY) ** 2);
-            const inBody = wx >= a.x && wx <= a.x + a.w &&
-                           wy >= a.y + a.h * 0.3 && wy <= a.y + a.h;
+            const bodyTop = a.y + a.h * (IS_MOBILE ? 0.1 : 0.3);
+            const bodyLeft  = a.x - a.w * (IS_MOBILE ? 0.3 : 0);
+            const bodyRight = a.x + a.w * (IS_MOBILE ? 1.3 : 1.0);
+            const inBody = wx >= bodyLeft && wx <= bodyRight &&
+                           wy >= bodyTop && wy <= a.y + a.h;
             if (dH < hR) {
                 a.heal(pl.healHead);
                 this.floatingTexts.push(new FloatingText(hCX, a.y - 10, `CRITICAL! +${pl.healHead}`, '#ffff00'));
