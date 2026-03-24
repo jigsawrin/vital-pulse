@@ -102,16 +102,6 @@ class Game {
             if (this.soundManager) this.soundManager.playDeathDing();
         });
 
-        // デバッグキー（ULT充填 & 即死）
-        window.addEventListener('keypress', e => {
-            if (e.key === 'u') {
-                this.allies.forEach(a => a.ultCharge = 100);
-            }
-            if (e.key === 'k') {
-                this.allies.forEach(a => a.hp = 0);
-            }
-        });
-
         this.isTitleScreen = true;
 
 
@@ -998,4 +988,8 @@ class Game {
 }
 
 // ゲーム開始
-window.addEventListener('DOMContentLoaded', () => { window._game = new Game(); });
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => { window._game = new Game(); });
+} else {
+    window._game = new Game();
+}
