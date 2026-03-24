@@ -687,6 +687,7 @@ class Game {
 
     _drawHUD(c) {
         const uiScale = IS_MOBILE ? 1.25 : 1.0;
+        const pl = this.player;
         const hudH = IS_MOBILE ? 100 : 80;
         const hudTop = CH - hudH;
 
