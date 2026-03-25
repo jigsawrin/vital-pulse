@@ -1,4 +1,4 @@
-import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave } from './entities_2d.js?v=b7';
+import { Platform, Ally, Enemy, Explosion, FloatingText, GROUND_Y, AttackerBullet, SlashEffect, DashLineEffect, HitscanImpact, Boss, BossBullet, SlamWave, ShatterParticle } from './entities_2d.js?v=b7';
 import { SoundManager } from './audio_2d.js?v=b3';
 
 const CW = 1280;
@@ -161,9 +161,15 @@ class Game {
         this.gameOver = false;
         this.victory  = false;
 
-        // ハイスコア
         this.highScore = parseInt(localStorage.getItem('vp-high-score')) || 0;
         this._updateTitleHighScore();
+
+        // 5.4.0: Boss Buff & Celebration
+        window._game = this;
+        this.bossBuffTimer = 0;
+        this.bossBuffMult = 1.0;
+        this.fireworks = [];
+        this.fireworkTimer = 0;
 
         // イベントリスナー
         this._initEvents();
@@ -445,7 +451,7 @@ class Game {
         this.bosses.forEach(b => b.update(dt, this.platforms, this.allies, this.bossBullets));
         this.bosses = this.bosses.filter(b => {
              if (!b.alive) {
-                 this.explosions.push(new Explosion(b.x + b.w/2, b.y + b.h/2, false));
+                 this.handleBossDefeat(b);
                  // WAVE 25クリア判定
                  if (this.wave === 25 && !this.victory) {
                      this.victory = true;
@@ -456,6 +462,20 @@ class Game {
              }
              return true;
         });
+
+        // 5.4.0: Fireworks & Buff Update
+        if (this.fireworkTimer > 0) {
+            this.fireworkTimer -= dt;
+            if (Math.random() < 0.1) this._spawnFirework();
+        }
+        this.fireworks = this.fireworks.filter(f => f.update(dt));
+
+        if (this.bossBuffTimer > 0) {
+            this.bossBuffTimer -= dt;
+            if (this.bossBuffTimer <= 0) {
+                this.bossBuffMult = 1.0;
+            }
+        }
 
         // ボスの弾
         this.bossBullets = this.bossBullets.filter(bb => bb.update(dt, this.allies));
@@ -641,6 +661,7 @@ class Game {
         this.explosions.forEach(ex  => ex.draw(c, this.camX));
         this.slashEffects.forEach(se => se.draw(c, this.camX));
         this.floatingTexts.forEach(ft => ft.draw(c, this.camX));
+        this.fireworks.forEach(f => f.draw(c, this.camX));
 
         c.restore(); // ── ズームスケール解除 ──────────────────────────
 
@@ -791,6 +812,19 @@ class Game {
             c.textAlign = 'right';
             c.fillText(`${Math.ceil(a.hp)} / ${a.maxHp}`, bx + bW, by + (IS_MOBILE ? 10 : 12));
         });
+
+        // 攻撃バフ表示
+        if (this.bossBuffTimer > 0) {
+            const t = Math.ceil(this.bossBuffTimer);
+            c.save();
+            c.font = `bold ${IS_MOBILE ? 22 : 28}px "Outfit", sans-serif`;
+            c.textAlign = 'center';
+            c.fillStyle = `rgba(255, 50, 255, ${0.7 + Math.sin(Date.now()*0.01)*0.3})`;
+            c.shadowColor = '#fff';
+            c.shadowBlur = 10;
+            c.fillText(`💥 ATTACK UP: ${t}s 💥`, CW / 2, hudTop - 30);
+            c.restore();
+        }
 
         // プレイヤー情報 (右側)
         const pBaseX = CW - (320 * uiScale);
@@ -1068,6 +1102,55 @@ class Game {
     _updateTitleHighScore() {
         const valEl = document.getElementById('high-score-val');
         if (valEl) valEl.textContent = this.highScore;
+    }
+
+    _spawnFirework() {
+        const x = this.camX + 100 + Math.random() * (VW - 200);
+        const y = 50 + Math.random() * 250;
+        const colors = ['#ff0055', '#00ff88', '#00ccff', '#ffff00', '#ffaa00'];
+        const col = colors[Math.floor(Math.random() * colors.length)];
+        
+        for (let i = 0; i < 30; i++) {
+            this.fireworks.push(new ShatterParticle(x, y, col));
+        }
+        if (this.soundManager) this.soundManager.playFirework();
+    }
+
+    handleBossDefeat(b) {
+        // 1. Effects
+        for (let i = 0; i < 60; i++) {
+            this.fireworks.push(new ShatterParticle(b.x + b.w/2, b.y + b.h/2, '#ff4400'));
+        }
+        this.explosions.push(new Explosion(b.x + b.w/2, b.y + b.h/2, 'critical'));
+        if (this.soundManager) this.soundManager.playBossExplosion();
+        
+        // 2. Rewards: Full Heal & Victory Lines
+        this.allies.forEach(a => {
+            const wasDying = a.isDying;
+            a.hp = a.maxHp;
+            a.isDying = false;
+            a.deathLine = '';
+            a.alive = true;
+
+            if (!wasDying) {
+                const lines = {
+                    TANK: "守りきったぞ。",
+                    ATTACKER: "当たればこんなもんよ！",
+                    FLANKER: "遅すぎだぜ。"
+                };
+                a.speechText = lines[a.role];
+                a.speechTimer = 2.5;
+            }
+        });
+        
+        // 3. Rewards: 10 Seconds Attack Buff (Synced with fireworks)
+        this.bossBuffTimer = 10.0;
+        this.bossBuffMult = 2.0;
+        
+        // 4. Celebration: Fireworks for 10 seconds
+        this.fireworkTimer = 10.0;
+        
+        this.floatingTexts.push(new FloatingText(b.x + b.w/2, b.y, "BOSS DEFEATED! FULL HEAL & ATK UP!", "#00ff88"));
     }
 }
 

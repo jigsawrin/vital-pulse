@@ -429,4 +429,91 @@ export class SoundManager {
         osc1.start(now); osc1.stop(now + 0.5);
         osc2.start(now); osc2.stop(now + 0.4);
     }
+
+    /**
+     * Boss Explosion: "どごぉぉぉん！！"
+     * Heavy, low-frequency layered explosion.
+     */
+    playBossExplosion() {
+        this._init();
+        const now = this.ctx.currentTime;
+
+        // Sub-bass thump
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'triangle';
+        sub.frequency.setValueAtTime(100, now);
+        sub.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+        subGain.gain.setValueAtTime(0.8, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start(now); sub.stop(now + 0.6);
+
+        // Main explosion noise
+        const noise = this.ctx.createBufferSource();
+        const noiseGain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+        const bufSize = this.ctx.sampleRate * 1.5;
+        const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for(let i=0; i<bufSize; i++) data[i] = Math.random()*2-1;
+        noise.buffer = buf;
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(100, now + 1.0);
+        filter.Q.setValueAtTime(5, now);
+
+        noiseGain.gain.setValueAtTime(0.6, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start(now); noise.stop(now + 1.5);
+    }
+
+    /**
+     * Firework SE: "ぱん！...しゅわ～"
+     * Pop followed by sizzling noise.
+     */
+    playFirework() {
+        this._init();
+        const now = this.ctx.currentTime;
+
+        // The "Pop" - Sine sweep
+        const pop = this.ctx.createOscillator();
+        const popGain = this.ctx.createGain();
+        pop.type = 'sine';
+        pop.frequency.setValueAtTime(400 + Math.random() * 200, now);
+        pop.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+        popGain.gain.setValueAtTime(0.3, now);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        pop.connect(popGain);
+        popGain.connect(this.ctx.destination);
+        pop.start(now); pop.stop(now + 0.08);
+
+        // The "Sizzle" - High freq noise
+        const sizzle = this.ctx.createBufferSource();
+        const sizzleGain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+        const bufSize = this.ctx.sampleRate * 0.4;
+        const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for(let i=0; i<bufSize; i++) data[i] = Math.random()*2-1;
+        sizzle.buffer = buf;
+
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(5000 + Math.random() * 2000, now);
+        
+        sizzleGain.gain.setValueAtTime(0, now);
+        sizzleGain.gain.linearRampToValueAtTime(0.15, now + 0.05); // Fade in
+        sizzleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+        sizzle.connect(filter);
+        filter.connect(sizzleGain);
+        sizzleGain.connect(this.ctx.destination);
+        sizzle.start(now); sizzle.stop(now + 0.4);
+    }
 }

@@ -390,7 +390,8 @@ export class Ally {
                         const force = (300 - dist) / 300 * 1050; // ノックバック強化
                         e.knockback(Math.sign(dx || 1) * force);
                         e.stun(2.2); // スタン時間延長
-                        e.applyDamage(ROLE_STATS.TANK.dmg * 3); // ダメージ強化
+                        const mult = window._game ? window._game.bossBuffMult : 1.0;
+                        e.applyDamage(ROLE_STATS.TANK.dmg * 3 * mult); // ダメージ強化
                         if (!this.isUlting) this.ultCharge = Math.min(100, this.ultCharge + 5);
                     }
                 });
@@ -475,7 +476,8 @@ export class Ally {
                 this.vx    = 0;
                 this.state = this.isUlting ? 'ULT' : 'ATTACK';
                 if (!this.isUlting && this.attackTimer <= 0) {
-                    target.applyDamage(ROLE_STATS.ATTACKER.dmg);
+                    const mult = window._game ? window._game.bossBuffMult : 1.0;
+                    target.applyDamage(ROLE_STATS.ATTACKER.dmg * mult);
                     this.ultCharge = Math.min(100, this.ultCharge + 8);
                     this.attackTimer = this.attackCd;
                 }
@@ -495,7 +497,8 @@ export class Ally {
             this.ultShootTimer -= dt;
             if (this.ultShootTimer <= 0) {
                 // 発射のディスパッチ
-                const bulletDmg = ROLE_STATS.ATTACKER.dmg * 0.7; // 威力アップ (0.4 -> 0.7)
+                const mult = window._game ? window._game.bossBuffMult : 1.0;
+                const bulletDmg = ROLE_STATS.ATTACKER.dmg * 0.7 * mult; // 威力アップ (0.4 -> 0.7)
                 const bulletVx = (this.facingRight ? 1 : -1) * 1400; // 超高速弾丸
                 const bx = this.facingRight ? this.x + this.w : this.x - 30;
                 // 3弾道の弾幕をディスパッチ (上段・中段・下段)
@@ -536,7 +539,8 @@ export class Ally {
                     this.vx = (dx / 0.15) * 1.5;
                     this.vy = (dy / 0.15) * 1.5;
                     
-                    this.ultTarget.applyDamage(ROLE_STATS.FLANKER.dmg * 1.5); // 一撃必殺から控えめに変更
+                    const mult = window._game ? window._game.bossBuffMult : 1.0;
+                    this.ultTarget.applyDamage(ROLE_STATS.FLANKER.dmg * 1.5 * mult); // 一撃必殺から控えめに変更
                     
                     const angle = Math.atan2(dy, dx);
                     window.dispatchEvent(new CustomEvent('vp-slash', {
@@ -637,10 +641,11 @@ export class Ally {
                     this.vx    = 0;
                     this.state = 'ATTACK';
                     if (this.attackTimer <= 0) {
-                        ce.applyDamage(ROLE_STATS.FLANKER.dmg);
+                        const mult = window._game ? window._game.bossBuffMult : 1.0;
+                        ce.applyDamage(ROLE_STATS.FLANKER.dmg * mult);
                         // 巻き込みダメージ（周囲50px）
                         live.filter(e => e !== ce && Math.abs(e.x - this.x) < 50)
-                            .forEach(e => e.applyDamage(ROLE_STATS.FLANKER.dmg * 0.4));
+                            .forEach(e => e.applyDamage(ROLE_STATS.FLANKER.dmg * 0.4 * mult));
                         if (!this.isUlting) this.ultCharge = Math.min(100, this.ultCharge + 10);
                         this.attackTimer = this.attackCd;
                     }
@@ -1135,6 +1140,41 @@ export class Explosion {
             }
             ctx.restore();
         });
+    }
+}
+
+// ────────────────────────────────────────────
+// ShatterParticle (ボス撃破時の破片)
+// ────────────────────────────────────────────
+export class ShatterParticle {
+    constructor(x, y, color = '#f00') {
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 600;
+        this.vy = (Math.random() - 0.8) * 500;
+        this.w = 8 + Math.random() * 12;
+        this.h = 8 + Math.random() * 12;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 15;
+        this.life = 1.0 + Math.random() * 0.5;
+        this.maxLife = this.life;
+        this.color = color;
+    }
+    update(dt) {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.vy += 800 * dt; // 重力
+        this.rotation += this.rotSpeed * dt;
+        this.life -= dt;
+        return this.life > 0;
+    }
+    draw(ctx, camX) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.life / this.maxLife);
+        ctx.translate(this.x - camX, this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+        ctx.restore();
     }
 }
 
